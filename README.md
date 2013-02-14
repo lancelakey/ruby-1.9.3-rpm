@@ -31,6 +31,12 @@ wget https://raw.github.com/lancelakey/ruby-1.9.3-rpm/master/ruby19.spec
 mock --init --resultdir=/home/builder/mock/.
 mock --buildsrpm --spec=/home/builder/rpmbuild/SPECS/ruby19.spec --sources=/home/builder/rpmbuild/SOURCES --resultdir=/home/builder/mock/.
 mock --rebuild /home/builder/mock/ruby*src.rpm --resultdir=/home/builder/mock/.
+
+
+# Example
+# Optional
+# Install the RPM you just made
+yum -y install /home/builder/mock/ruby-1.9.3p385-1.el6.x86_64.rpm
 ```
 
 
