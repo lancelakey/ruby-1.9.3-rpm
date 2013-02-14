@@ -1,5 +1,5 @@
 %define rubyver         1.9.3
-%define rubyminorver    p374
+%define rubyminorver    p385
 
 Name:           ruby
 Version:        %{rubyver}%{rubyminorver}
@@ -40,6 +40,8 @@ export CFLAGS="$RPM_OPT_FLAGS -Wall -fno-strict-aliasing"
 %configure \
   --enable-shared \
   --disable-rpath \
+  --without-X11 \
+  --without-tk \
   --includedir=%{_includedir}/ruby \
   --libdir=%{_libdir}
 
@@ -63,8 +65,10 @@ rm -rf $RPM_BUILD_ROOT
 %{_libdir}
 
 %changelog
+* Thu Feb 14 2013 Lance Lakey <lancelakey@gmail.com> - 1.9.3-p385
+- Update for Ruby 1.9.3-p385 release.
 * Tue Feb 5 2013 Ian Meyer <ianmmeyer@gmail.com> - 1.9.3-p374
-- Update for Ruby 1.9.3-p327 release.
+- Update for Ruby 1.9.3-p374 release.
 * Sun Nov 25 2012 Gareth Jones <me@gazj.co.uk> - 1.9.3-p327
 - Update for Ruby 1.9.3-p327 release.
 * Wed Apr 25 2012 mathew <meta@pobox.com> - 1.9.3-p194-1
