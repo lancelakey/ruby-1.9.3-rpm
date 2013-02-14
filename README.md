@@ -6,26 +6,37 @@ This spec is an attempt to push for a stable replacement of Ruby 1.8.x with 1.9.
 
 #### RHEL/CentOS 5/6
 
-    yum install -y rpm-build rpmdevtools readline-devel ncurses-devel gdbm-devel tcl-devel openssl-devel db4-devel byacc libyaml-devel libffi-devel make
-    rpmdev-setuptree
-    cd ~/rpmbuild/SOURCES
-    wget http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p374.tar.gz
-    cd ~/rpmbuild/SPECS
-    wget https://raw.github.com/imeyer/ruby-1.9.3-rpm/master/ruby19.spec
-    rpmbuild -bb ruby19.spec
-    ARCH=`uname -m`
-    KERNEL_REL=`uname -r`
-    KERNEL_TMP=${KERNEL_REL%.$ARCH}
-    DISTRIB=${KERNEL_TMP##*.}
-    yum localinstall ~/rpmbuild/RPMS/${ARCH}/ruby-1.9.3p374-1.${DISTRIB}.${ARCH}.rpm
+```shell
+# Remove existing Ruby
+rpm -qa | grep -i ruby | xargs rpm -e
 
-**PROFIT!**
+# Install dependencies
+yum -y install rpm-build redhat-rpm-config rpmdevtools mock
+
+# Create a "builder" user for creating RPM using mock
+sudo adduser builder --home-dir /home/builder --create-home --user-group --groups mock --shell /bin/bash --comment "rpm package builder"
+
+# Login as "builder" user
+su -l builder
+
+# Create tree of folders for RPM
+# Download files for RPM
+rpmdev-setuptree
+cd ~/rpmbuild/SOURCES
+wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p385.tar.gz
+cd ~/rpmbuild/SPECS
+wget https://raw.github.com/lancelakey/ruby-1.9.3-rpm/master/ruby19.spec
+
+# Create RPM using mock
+mock --init --resultdir=/home/builder/mock/.
+mock --buildsrpm --spec=/home/builder/rpmbuild/SPECS/ruby19.spec --sources=/home/builder/rpmbuild/SOURCES --resultdir=/home/builder/mock/.
+mock --rebuild /home/builder/mock/ruby*src.rpm --resultdir=/home/builder/mock/.
+```
+
 
 ### What it does
 
-+ Builds
-+ Installs
-+ Overwrites/upgrades your currently installed ruby package (**DANGEROUS**)
++ Creates RPM
 
 ### What it does **not** do
 
@@ -42,10 +53,9 @@ This spec is an attempt to push for a stable replacement of Ruby 1.8.x with 1.9.
 
 ### Distro support
 
-Tested working (as sane as I could test for) on:
+Tested working on:
 
-* CentOS 5.x x86_64
-* CentOS 6.3 (Final)
+* CentOS 6.3 (Final) x86_64
 
 ### Personal thoughts
 
